@@ -22,7 +22,7 @@
 <p>labels {{v_lables}}</p> -->
 
 {% for key in all_climbs %}
-<a href="{{ url_for('changing_climb', climb=key) }}">{{key}}</a>
+<a href="{{ url_for('set_climb', climb=key) }}">{{key}}</a>
 {% endfor %}
 
   

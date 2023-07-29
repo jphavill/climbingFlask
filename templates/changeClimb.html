@@ -8,21 +8,22 @@
 <h2 class="subtitle">
   This page will automatically redirect when the data is loaded.
 </h2>
+<p>{{url_for('load_new_climb')}}</p>
 <script>
-    const data = {
-        Key: '{{climb["Key"]}}',
-    }
-
+    console.log("On the page")
+    
     function navigate() {
-        window.location.href = 'climb';  // Redirects user to the /map route when 'create_map' is finished
+        let exisitingURl = window.location.href
+        exisitingURl = exisitingURl.replace('/changing_climb', '/climb');
+        window.location.href = exisitingURl;
     }
-    fetch('load_new_climb', {
+    
+    fetch('{{url_for('load_new_climb')}}', {
         method: 'POST',
         headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(navigate); // Performing 'create_map' and then calls navigate() function, declared above
+        }
+    }).then(navigate); 
 </script>
 {% endblock %}

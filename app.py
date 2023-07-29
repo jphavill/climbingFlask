@@ -33,18 +33,12 @@ def loading():
     form_data = request.form
     return render_template('loading.html', form_data=form_data)
 
-@app.route('/changing_climb/<climb>', methods =["GET", "POST"])
-def changing_climb(climb):
-    user = session['user']
-    climb = user + "/" + climb
-    print(climb)
-    return render_template('changeClimb.html', climb=climb)
-
 
 @app.route('/logout', methods =["GET"])
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
 
 @app.route('/climb/', methods =["GET"])
 def climb():
@@ -94,14 +88,25 @@ def first_time_setup():
     session['user'] = user
     return "climb file retrieved"
 
+@app.route('/changing_climb/', methods=["GET", 'POST'])
+def changing_climb():
+    return render_template('changeClimb.html', climb=climb)
+
+@app.route('/set_climb/<climb>', methods=['GET'])
+def set_climb(climb):
+    session['active_climb'] = climb
+    return redirect(url_for('changing_climb'))
 
 @app.route('/load_new_climb', methods=["POST"])
 def load_new_climb():
-    climb_data = request.json
-    key = climb_data['Key']
+    print("LOADED")
+    user = session['user']
+    active_climb = session['active_climb']
+    key = user + "/" + active_climb
+    print(f"KEY IN LOAD NEW CLIMB IS {key}")
 
     climbs_interface = s3Interface(processed_bucket)
-    climb_file = climbs_interface.readFile(processed_bucket, key)
+    climb_file = climbs_interface.readFile(key)
     session['climb_file'] = climb_file
     return "climb file retrieved"
     
