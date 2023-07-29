@@ -2,12 +2,15 @@
 
 {% block content %}
 
-<h1 class="title">
+<h2 class="title">
     Please wait while your recent climbing data is retrieved.
-</h1>
-<h2 class="subtitle">
-  This page will automatically redirect when the data is loaded.
 </h2>
+<h3 class="subtitle">
+  This page will automatically redirect when the data is loaded.
+</h3>
+<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+    <span class="sr-only">Loading...</span>
+</div>
 <script>
     const data = {
         email: '{{form_data["email"]}}',

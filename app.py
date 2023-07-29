@@ -46,10 +46,11 @@ def climb():
         return redirect(url_for('login'))
     climb_file = session['climb_file']
     all_climbs = session['all_climbs']
+    active_climb = session['active_climb']
     print(all_climbs)
     labels, success_data, attempts_data = generateClimbGraph(climb_file)
     timeline_datasets = generateTimelineGraph(climb_file)
-    return render_template('climb.html', climb_file=climb_file, all_climbs=all_climbs, success_data=success_data, attempts_data=attempts_data, v_lables=labels, timeline_datasets=timeline_datasets)
+    return render_template('climb.html', active_climb=active_climb, climb_file=climb_file, all_climbs=all_climbs, success_data=success_data, attempts_data=attempts_data, v_lables=labels, timeline_datasets=timeline_datasets)
     
 @app.route('/first_time_setup', methods =["POST"])
 def first_time_setup():

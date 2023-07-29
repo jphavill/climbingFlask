@@ -2,13 +2,22 @@
 
 {% block content %}
 
-<h1 class="title">
-    Please wait while your recent climbing data is retrieved.
-</h1>
-<h2 class="subtitle">
-  This page will automatically redirect when the data is loaded.
-</h2>
-<p>{{url_for('load_new_climb')}}</p>
+
+<div class="mt-5 d-flex align-items-center justify-content-center flex-column">
+    <div>
+        <h2 class="title">
+            Please wait while your climbing data is retrieved.
+        </h2>
+    </div>
+    <div class="spinner-border mt-5" style="width: 15rem; height: 15rem;" role="status">
+        <span class="sr-only"></span>  
+    </div>
+    <div>
+        <p class="subtitle mt-5 ">
+            This page will automatically redirect when the data is loaded.
+          </p>
+    </div>
+</div>
 <script>
     console.log("On the page")
     

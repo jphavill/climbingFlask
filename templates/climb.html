@@ -21,9 +21,52 @@
 <p>attempts {{attempts_data }}</p>
 <p>labels {{v_lables}}</p> -->
 
-{% for key in all_climbs %}
-<a href="{{ url_for('set_climb', climb=key) }}">{{key}}</a>
-{% endfor %}
+
+<div class="container-fluid py-2">
+    <h2 class="font-weight-light">Current Climb: {{active_climb}}</h2>
+    <div class="d-flex flex-row flex-nowrap">
+        {% for key in all_climbs %}
+            {% if key == active_climb %}
+            <div class="card card-body border-0">
+                <button type="button" class="btn btn-outline-success" disabled>{{key}}</button>
+            </div>
+            {% else %}
+            <div class="card card-body border-0">
+                <a href="{{ url_for('set_climb', climb=key) }}" class="btn btn-primary">{{key}}</a>
+            </div>
+            {% endif %}
+            
+            
+        {% endfor %}
+    </div>
+    <div class="mt-3 d-flex flex-row">
+        <div class="card card-body bg-light">
+            <h3>Success Data</h3>
+            <p>Avg HR: </p>
+            <p>Avg Time: </p>
+            <p>Total time:</p>
+            <p>Avg Grade: </p>
+            <p>Highest Grade: </p>
+        </div>
+        <div class="card card-body bg-light">
+            <h3>Attempt Data</h3>
+            <p>Avg HR: </p>
+            <p>Avg Time: </p>
+            <p>Total time:</p>
+            <p>Avg Grade: </p>
+            <p>Highest Grade: </p>
+        </div>
+        <div class="card card-body bg-light">
+            <h3>Overall Data</h3>
+            <p>Avg HR: </p>
+            <p>Avg Time: </p>
+            <p>Total time:</p>
+            <p>Avg Grade: </p>
+            <p>Highest Grade: </p>
+        </div>
+    </div>
+</div>
+
 
   
 <div class="climbs">
