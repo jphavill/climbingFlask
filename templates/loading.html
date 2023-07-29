@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title">
+    Please wait while your recent climbing data is retrieved.
+</h1>
+<h2 class="subtitle">
+  This page will automatically redirect when the data is loaded.
+</h2>
+<script>
+    const data = {
+        email: '{{form_data["email"]}}',
+        password: '{{form_data["password"]}}',
+        phone: '{{form_data["phone"]}}',
+    }
+
+    function navigate() {
+        window.location.href = 'climb';  // Redirects user to the /map route when 'create_map' is finished
+    }
+    fetch('first_time_setup', {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(navigate); // Performing 'create_map' and then calls navigate() function, declared above
+</script>
+{% endblock %}

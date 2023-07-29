@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- <h1 class="title">
+  climbing data
+</h1>
+<h2 class="subtitle">
+  Easy authentication and authorization in Flask.
+</h2>
+{% for key,value in climb_file.items() %}
+<h2> {{key}}</h2>
+<p> {{value}}</p>
+
+{% endfor %}
+
+<p>success {{success_data }}</p>
+<p>attempts {{attempts_data }}</p>
+<p>labels {{v_lables}}</p> -->
+
+{% for key in all_climbs %}
+<a href="{{ url_for('changing_climb', climb=key) }}">{{key}}</a>
+{% endfor %}
+
+  
+<div class="climbs">
+    <canvas id="climbsChart" width="800" height="500">
+    </canvas>
+</div>
+<div class="timeline">
+    <canvas id="timelineChart" width="800" height="200">
+    </canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('climbsChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ v_lables | tojson}}, 
+            datasets: [{
+                label: 'attempts',
+                data: {{ attempts_data }},
+                backgroundColor: 'rgba(226, 96, 96, 0.5)'
+            }, {
+                label: 'succesful',
+                data: {{ success_data }},
+                backgroundColor: 'rgba(104, 255, 0, 0.5)'
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Successful Vs Attempted Climbs in this Session'
+                },
+                legend: {
+                    position: 'chartArea' 
+                },
+                tooltip: {
+                    titleFont: {
+                    size: 20
+                    },
+                    bodyFont: {
+                    size: 15
+                    }
+                }
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true 
+                },
+                y: {
+                    stacked: true 
+                }
+            }
+        }
+    });
+
+    const ctx2 = document.getElementById('timelineChart').getContext('2d');
+    var timelineChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ["Climbs"],
+        datasets: {{timeline_datasets | tojson}}
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Time Spent Per Climb'
+                },
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    titleFont: {
+                    size: 20
+                    },
+                    bodyFont: {
+                    size: 15
+                    }
+                }
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Time (seconds)'
+                    }
+                },
+                y: {
+                    stacked: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
