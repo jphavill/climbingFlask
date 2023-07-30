@@ -20,6 +20,8 @@ class s3Interface:
             client = boto3.client('s3')
             print(f"inside bucket={self.bucket} key={key}")
             response = client.get_object(Bucket=self.bucket, Key=key)
+            print("response")
+            print(response)
             return json.loads(response["Body"].read())
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "NoSuchKey":
