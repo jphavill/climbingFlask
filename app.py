@@ -124,7 +124,7 @@ def first_time_setup():
         sleep(5)
         
     loaded = False
-    max_tries = 5
+    max_tries = 10
     while not loaded:
         try:
             max_tries -= 1
@@ -132,7 +132,9 @@ def first_time_setup():
             climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
             loaded = True
         except:
-            sleep(2)
+            sleep(1)
+        if not max_tries:
+            return { "invalid": True }
     session['climb_file'] = climb_file
     session['all_climbs'] = all_climbs
     session['active_climb'] = all_climbs[0]
