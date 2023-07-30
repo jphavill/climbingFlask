@@ -102,6 +102,7 @@ def first_time_setup():
     else:
         print("new user")
         print(stored_creds)
+        print(form_data)
         creds_interface.writeFile(form_data, f"{safe_email}.json")
         lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
         downloadLambda = lambdaInterface()
