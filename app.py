@@ -123,9 +123,15 @@ def first_time_setup():
             return { "invalid": True }
         sleep(5)
         
-
-    climbs_interface = s3Interface(processed_bucket)
-    climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
+    loaded = False
+    max_tries = 5
+    while not loaded:
+        try:
+            max_tries -= 1
+            climbs_interface = s3Interface(processed_bucket)
+            climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
+        except:
+            sleep(2)
     session['climb_file'] = climb_file
     session['all_climbs'] = all_climbs
     session['active_climb'] = all_climbs[0]
