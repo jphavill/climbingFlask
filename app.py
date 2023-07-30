@@ -37,14 +37,15 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/account', methods =["GET"])
-def account():
+@app.route('/account', defaults={"failed_validation": False}, methods =["GET"])
+@app.route('/account/<failed_validation>', methods =["GET"])
+def account(failed_validation):
     if 'user' not in session.keys():
         return redirect(url_for('login'))
     user = session["user"]
     creds_interface = s3Interface(user_creds_bucket)
     current_phone =  creds_interface.readFile(user + '.json')['phone']
-    return render_template("account.html", phone=current_phone)
+    return render_template("account.html", phone=current_phone, failed_validation=failed_validation)
 
 
 @app.route('/update_account', methods =["POST"])
