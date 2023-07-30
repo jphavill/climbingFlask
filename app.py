@@ -103,7 +103,8 @@ def first_time_setup():
         print("new user")
         print(stored_creds)
         print(form_data)
-        creds_interface.writeFile(form_data, f"{safe_email}.json")
+        creds_payload = {"creds": {"email": safe_email, "password":  form_data['password'], "phone": ""}}
+        creds_interface.writeFile(creds_payload, f"{safe_email}.json")
         lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
         downloadLambda = lambdaInterface()
         response = downloadLambda.run_lambda(lambda_payload, "testDownload", invoc_type="RequestResponse") 
