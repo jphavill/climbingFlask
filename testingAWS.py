@@ -1,5 +1,2 @@
-access_key_id = "ASIA2ZTAMQPVMMP4O4W5"
-secret_access_key = "qYFBCtNPeyCnibI2sgZ/yAl+gFDwv9lmWY0GBDJX"
-session_token = "FwoGZXIvYXdzEBAaDDqDdQ/70tRydU9r6yLAAS6UTNV/oIIkrvTGI6DmoSZW7p+HumVbzU+G0n4FdZ9N1/uKqYdko0ND+0WJ5MeMqGc+4z1SXtyp0LBCEfOpuOz0LDS1Pp9Nsa7mGXB1JOj4uXaeSViSzg6Y7iI4R8LUMXsa0E0iy+1JEpuKw+M9ynl8rD4XjplKCM+ztwtkUkXz0r5oJi8VfvRpFCYtdD3nQFsZJM8D13WPdQgBJrrfPJP78oxzjZ48Fa4pUvZGgv8QlVBKXluLsbdPI8tYcHSB6iisqpamBjIt0lb+sgyGxJkexkBDRIv9FpyvSbvoSb7jp/D4WxTsl14SO2Q0W3+g69BHpG63"
 user_creds_bucket = 'climbing-user-creds'
 processed_bucket = 'processed-fit-files'
