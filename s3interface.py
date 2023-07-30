@@ -12,14 +12,14 @@ class s3Interface:
     def writeFile(self, data, key):
         binary_data = json.dumps(data).encode('utf-8')
         try:
-            client = boto3.client('s3', region_name="eu-east-1")
+            client = boto3.client('s3', region_name="us-east-1")
             client.put_object(Body=binary_data, Bucket=self.bucket, Key=key)
         except Exception as e:
             print(f"Failed to read file: {e}")
 
     def readFile(self, key):
         try:
-            client = boto3.client('s3', config=config, region_name="eu-east-1")
+            client = boto3.client('s3', config=config, region_name="us-east-1")
             print(f"inside bucket={self.bucket} key={key}")
             response = client.get_object(Bucket=self.bucket, Key=key)
             print("response")
