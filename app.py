@@ -97,7 +97,7 @@ def first_time_setup():
     creds_interface = s3Interface(user_creds_bucket)
     stored_creds = creds_interface.readFile(safe_email + '.json')
     climb_file = {}
-    if stored_creds and stored_creds['email'] == form_data['email'] and stored_creds['password'] == form_data['password']:
+    if stored_creds and stored_creds['email'] == safe_email and stored_creds['password'] == form_data['password']:
         print("existing user")
     else:
         print("new user")
