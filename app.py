@@ -130,6 +130,7 @@ def first_time_setup():
             max_tries -= 1
             climbs_interface = s3Interface(processed_bucket)
             climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
+            loaded = True
         except:
             sleep(2)
     session['climb_file'] = climb_file
