@@ -22,3 +22,16 @@ div.content {
 .card-scroll{
   overflow-x: auto;
 }
+
+.resize-mobile {
+  flex: 0 0 auto;
+  width: 41.66666667%;
+  
+}
+
+@media screen and (min-width: 750px) {
+  .resize-mobile {
+    flex: 0 0 auto;
+    width: 25%;
+  }
+}

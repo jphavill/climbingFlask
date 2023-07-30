@@ -25,7 +25,7 @@
     <h2 class="font-weight-light">Current Climb: {{active_climb}}</h2>
     <div class="d-flex flex-row flex-nowrap card-scroll">
         {% for key in all_climbs %}
-            <div class="col-3">
+            <div class="resize-mobile">
             {% if key == active_climb %}
             <div class="card card-body border-0">
                 <button type="button" class="btn btn-outline-success" disabled>{{key}}</button>
