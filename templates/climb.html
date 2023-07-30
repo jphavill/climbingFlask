@@ -21,11 +21,11 @@
 <p>attempts {{attempts_data }}</p>
 <p>labels {{v_lables}}</p> -->
 
-
 <div class="container-fluid py-2">
     <h2 class="font-weight-light">Current Climb: {{active_climb}}</h2>
-    <div class="d-flex flex-row flex-nowrap">
+    <div class="d-flex flex-row flex-nowrap card-scroll">
         {% for key in all_climbs %}
+            <div class="col-3">
             {% if key == active_climb %}
             <div class="card card-body border-0">
                 <button type="button" class="btn btn-outline-success" disabled>{{key}}</button>
@@ -35,34 +35,34 @@
                 <a href="{{ url_for('set_climb', climb=key) }}" class="btn btn-primary">{{key}}</a>
             </div>
             {% endif %}
-            
+            </div>
             
         {% endfor %}
     </div>
     <div class="mt-3 d-flex flex-row">
         <div class="card card-body bg-light">
             <h3>Success Data</h3>
-            <p>Avg HR: </p>
-            <p>Avg Time: </p>
-            <p>Total time:</p>
-            <p>Avg Grade: </p>
-            <p>Highest Grade: </p>
+            <p>Avg HR: {{climb_stats["avg_s_hr"]}}</p>
+            <p>Avg Time: {{climb_stats["avg_s_time"]}}</p>
+            <p>Total time: {{climb_stats["total_s_time"]}}</p>
+            <p>Avg Grade: {{climb_stats["avg_s_grade"]}}</p>
+            <p>Highest Grade: {{climb_stats["highest_s_grade"]}}</p>
         </div>
         <div class="card card-body bg-light">
             <h3>Attempt Data</h3>
-            <p>Avg HR: </p>
-            <p>Avg Time: </p>
-            <p>Total time:</p>
-            <p>Avg Grade: </p>
-            <p>Highest Grade: </p>
+            <p>Avg HR: {{climb_stats["avg_a_hr"]}}</p>
+            <p>Avg Time: {{climb_stats["avg_a_time"]}}</p>
+            <p>Total time: {{climb_stats["total_a_time"]}}</p>
+            <p>Avg Grade: {{climb_stats["avg_a_grade"]}}</p>
+            <p>Highest Grade: {{climb_stats["highest_a_grade"]}}</p>
         </div>
         <div class="card card-body bg-light">
             <h3>Overall Data</h3>
-            <p>Avg HR: </p>
-            <p>Avg Time: </p>
-            <p>Total time:</p>
-            <p>Avg Grade: </p>
-            <p>Highest Grade: </p>
+            <p>Avg HR: {{climb_stats["avg_hr"]}}</p>
+            <p>Avg Time: {{climb_stats["avg_time"]}}</p>
+            <p>Total time: {{climb_stats["total_time"]}}</p>
+            <p>Avg Grade: {{climb_stats["avg_grade"]}}</p>
+            <p>Highest Grade: {{climb_stats["highest_grade"]}}</p>
         </div>
     </div>
 </div>
@@ -86,11 +86,11 @@
             labels: {{ v_lables | tojson}}, 
             datasets: [{
                 label: 'attempts',
-                data: {{ attempts_data }},
+                data: {{ climb_data['attempts_data'] }},
                 backgroundColor: 'rgba(226, 96, 96, 0.5)'
             }, {
                 label: 'succesful',
-                data: {{ success_data }},
+                data: {{ climb_data['success_data'] }},
                 backgroundColor: 'rgba(104, 255, 0, 0.5)'
             }]
         },

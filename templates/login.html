@@ -1,27 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    <div class="box">
-        <form action={{ url_for("loading") }} method="POST">
-            <div class="form-outline mb-4">
-              <input type="email" class="form-control" name="email"/>
-              <label class="form-label" for="email">Email address</label>
-            </div>
-          
-            <div class="form-outline mb-4">
-              <input type="password" class="form-control"name="password"/>
-              <label class="form-label" for="password">Password</label>
-            </div>
-
-            <div class="form-outline mb-4">
-                <input type="number" class="form-control" name="phone" min="10000000000" max="9999999999999"/>
-                <label class="form-label" for="phone">Phone Number</label>
-            </div>
-          
-            <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
-          </form>
+<div class="back">
+    <div class="div-center">
+        <div class="content">
+          <h3 class="title">Login</h3>
+          <div class="box">
+              <form action={{ url_for("loading") }} method="POST">
+                  <div class="form-outline mb-4">
+                    <input type="email" class="form-control" name="email" required/>
+                    <label class="form-label" for="email">Email address</label>
+                  </div>
+                
+                  <div class="form-outline mb-4">
+                    <input type="password" class="form-control"name="password" required/>
+                    <label class="form-label" for="password">Password</label>
+                  </div>         
+                  <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+                </form>
+          </div>
+        </div>
     </div>
+    
+</div>
+<div class="column is-4 is-offset-4">
+    
 </div>
 {% endblock%}

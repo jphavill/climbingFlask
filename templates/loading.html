@@ -2,14 +2,20 @@
 
 {% block content %}
 
-<h2 class="title">
-    Please wait while your recent climbing data is retrieved.
-</h2>
-<h3 class="subtitle">
-  This page will automatically redirect when the data is loaded.
-</h3>
-<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-    <span class="sr-only">Loading...</span>
+<div class="mt-5 d-flex align-items-center justify-content-center flex-column">
+    <div>
+        <h2 class="title">
+            Please wait while your recent climbing data is retrieved.
+        </h2>
+    </div>
+    <div class="spinner-border mt-5" style="width: 15rem; height: 15rem;" role="status">
+        <span class="sr-only"></span>  
+    </div>
+    <div>
+        <p class="subtitle mt-5 ">
+            This page will automatically redirect when the data is loaded.
+          </p>
+    </div>
 </div>
 <script>
     const data = {
@@ -19,7 +25,12 @@
     }
 
     function navigate() {
-        window.location.href = 'climb';  // Redirects user to the /map route when 'create_map' is finished
+        // console.log("navigate to climb")
+        window.location.href = 'climb';  
+    }
+    function invalid_navigate() {
+        // console.log("navigate to invalid")
+        window.location.href = 'invalid';  
     }
     fetch('first_time_setup', {
         method: 'POST',
@@ -28,6 +39,15 @@
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then(navigate); // Performing 'create_map' and then calls navigate() function, declared above
+    }).then(response => response.json()).then(data => {
+        console.log(data)
+        if (data.invalid){
+            invalid_navigate()
+        } else {
+            navigate()
+        }
+    }) 
+    
+    then(navigate); 
 </script>
 {% endblock %}

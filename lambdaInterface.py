@@ -7,24 +7,26 @@ class lambdaInterface:
     def __init__(self):
         self.session = boto3.Session(aws_access_key_id=access_key_id, aws_secret_access_key=secret_access_key, aws_session_token=session_token, region_name='us-east-1')
        
-    def run_download(self, payload):
+    def run_lambda(self, payload, function_name, invoc_type="Event"):
         payload = json.dumps(payload).encode('utf-8')
         try: 
             client = self.session.client('lambda')
             response = client.invoke(
-                FunctionName='testDownload',
-                InvocationType='RequestResponse',
+                FunctionName=function_name,
+                InvocationType=invoc_type,
                 Payload=payload
             )
-            return response["StatusCode"]
+            response = json.loads(response['Payload'].read())
+            return response['StatusCode']
         except Exception as e:
             print(f"failed to start lambda: {e}")
-            return False
+            return 401
+        
             
 
 if __name__ == "__main__":
     runner = lambdaInterface()
     safe_email = 'jphavill.gmail.com'
     lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
-    result = runner.run_download(lambda_payload)
+    result = runner.run_lambda(lambda_payload)
     print(result)

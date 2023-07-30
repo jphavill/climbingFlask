@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from s3interface import s3Interface
 from lambdaInterface import lambdaInterface
 from testingAWS import user_creds_bucket, processed_bucket
-from graphStats import generateClimbGraph, generateTimelineGraph
+from graphStats import generateClimbGraph, generateTimelineGraph, generateCardData
 
 import os
-
+from time import sleep
 
 
 app = Flask(__name__)
@@ -22,7 +22,9 @@ def index():
         print(session['climb_file'])
         return redirect(url_for('climb'))
 
-    
+@app.route('/invalid')
+def invalid():
+    return render_template('invalid.html')
 
 @app.route('/login')
 def login():
@@ -39,6 +41,42 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/account', methods =["GET"])
+def account():
+    if 'user' not in session.keys():
+        return redirect(url_for('login'))
+    user = session["user"]
+    creds_interface = s3Interface(user_creds_bucket)
+    current_phone =  creds_interface.readFile(user + '.json')['phone']
+    return render_template("account.html", phone=current_phone)
+
+
+@app.route('/update_account', methods =["POST"])
+def update_account():
+    form_data = request.form
+    print(form_data)
+    new_phone = form_data["phone"]
+    confirmation = form_data["confirmation"]
+    remove_phone = 'remove' in form_data.keys()
+    remove_account = 'delete' in form_data.keys()
+
+    if new_phone or remove_phone:
+        lambda_payload = {"creds": {"email": session["user"], "password": confirmation, "phone": "" if remove_phone else new_phone}}
+        downloadLambda = lambdaInterface()
+        downloadLambda.run_lambda(lambda_payload, "updatePhone", invoc_type="RequestResponse") 
+    
+    if remove_account:
+        lambda_payload = {"creds": {"email": session["user"], "password": confirmation}}
+        lambdaDelete = lambdaInterface()
+        response = lambdaDelete.run_lambda(lambda_payload, "delete_account", invoc_type="RequestResponse") 
+        print(response)
+        if response == 200:
+            print("did it")
+            return redirect(url_for('logout'))
+        else: 
+            print("did not do it")
+            return redirect(url_for('account'))
+    return redirect(url_for('account'))
 
 @app.route('/climb/', methods =["GET"])
 def climb():
@@ -50,19 +88,21 @@ def climb():
     print(all_climbs)
     labels, success_data, attempts_data = generateClimbGraph(climb_file)
     timeline_datasets = generateTimelineGraph(climb_file)
-    return render_template('climb.html', active_climb=active_climb, climb_file=climb_file, all_climbs=all_climbs, success_data=success_data, attempts_data=attempts_data, v_lables=labels, timeline_datasets=timeline_datasets)
+    climb_data = {"success_data": success_data, "attempts_data": attempts_data}
+    climb_stats = generateCardData(climb_file)
+    return render_template('climb.html', climb_stats=climb_stats, climb_data=climb_data, active_climb=active_climb, climb_file=climb_file, all_climbs=all_climbs, v_lables=labels, timeline_datasets=timeline_datasets)
     
 @app.route('/first_time_setup', methods =["POST"])
 def first_time_setup():
     form_data = request.json
     print(form_data)
     safe_email = form_data['email'].replace('@', '.')
+    session["user"] = safe_email
     creds_interface = s3Interface(user_creds_bucket)
     stored_creds = creds_interface.readFile(safe_email + '.json')
-    print("stored_creds")
-    print(stored_creds)
     climb_file = {}
-
+    print(f"stored_creds {stored_creds}")
+    print(f"form data {form_data}")
     if stored_creds and stored_creds['email'] == form_data['email'] and stored_creds['password'] == form_data['password']:
         print("creds already exist, loggin in")
     else:
@@ -70,24 +110,39 @@ def first_time_setup():
         creds_interface.writeFile(form_data, f"{safe_email}.json")
         lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
         downloadLambda = lambdaInterface()
-        response = downloadLambda.run_download(lambda_payload) 
+        response = downloadLambda.run_lambda(lambda_payload, "testDownload", invoc_type="RequestResponse") 
+        
         for _ in range(10):
             print("response")
             print(response)
-            if response == 200:
+
+            if int(response) == 200:
                 break
-            elif response == 401:
+            elif int(response) == 403:
                 print("dealing with ddos stuff")
-            elif response == 403:
-                print("wrong creds")
+                sleep(2)
+            elif int(response) == 401:
+                print("401")
                 break
-            response = downloadLambda.run_download(lambda_payload) 
+            response = downloadLambda.run_lambda(lambda_payload, "testDownload", invoc_type="RequestResponse") 
+        # give time for at least one climb to be processed before calling for it
+        if response != 200:
+            print("wrong creds")
+            lambda_payload = {"creds": {"email": safe_email, "password":  form_data['password']}}
+            lambdaDelete = lambdaInterface()
+            response = lambdaDelete.run_lambda(lambda_payload, "delete_account", invoc_type="RequestResponse")
+            session.clear()
+            return { "invalid": True }
+        sleep(5)
+        
+
     climbs_interface = s3Interface(processed_bucket)
     climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
     session['climb_file'] = climb_file
     session['all_climbs'] = all_climbs
+    session['active_climb'] = all_climbs[0]
     session['user'] = user
-    return "climb file retrieved"
+    return { "invalid": False }
 
 @app.route('/changing_climb/', methods=["GET", 'POST'])
 def changing_climb():
@@ -100,11 +155,9 @@ def set_climb(climb):
 
 @app.route('/load_new_climb', methods=["POST"])
 def load_new_climb():
-    print("LOADED")
     user = session['user']
     active_climb = session['active_climb']
     key = user + "/" + active_climb
-    print(f"KEY IN LOAD NEW CLIMB IS {key}")
 
     climbs_interface = s3Interface(processed_bucket)
     climb_file = climbs_interface.readFile(key)

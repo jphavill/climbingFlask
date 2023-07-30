@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mt-5 d-flex align-items-center justify-content-center flex-column">
+    <div>
+        <h2 class="title">
+            Garmin Servers did not Accept Credentials.
+        </h2>
+    </div>
+    <div>
+        <p class="subtitle mt-5 ">
+            You may have entered your email or password wrong. 
+        </p>
+    </div>
+    <div>
+        <a class="btn btn-primary btn-block mb-4" href="{{ url_for('login') }}">Back to Login</a>
+    </div>
+
+
+</div>
+{% endblock %}

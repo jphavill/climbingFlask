@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="back">
+    <div class="div-center">
+        <div class="content">
+        <h3 class="title">Manage Account</h3>
+        <div class="box">
+            <form action={{ url_for("update_account") }} method="POST">
+                <p>Current Phone Number: {{phone}}</p>
+                <div class="form-outline  mb-4">
+                    <input type="number" class="form-control" name="phone" min="10000000000" max="9999999999999"/>
+                    <label class="form-label" for="phone">Update Phone Number</label>
+                </div>
+                
+                <div class="form-outline mb-4">
+                    <input type="password" class="form-control"name="confirmation" required/>
+                    <label class="form-label" for="password">Enter your password to confirm changes</label>
+                </div>
+
+                {% if phone %}
+                <div class="form-check  mb-4">
+                    <input class="form-check-input" type="checkbox" value="" name="remove">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Remove Phone Number
+                    </label>
+                </div>
+                {% endif %}
+                <div class="form-check  mb-4">
+                    <input class="form-check-input" type="checkbox" value="" name="delete">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Delete Account and Clear Climbing Data
+                    </label>
+                </div>
+              
+                <button type="submit" class="btn btn-primary btn-block mb-4">Update Account</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock%}

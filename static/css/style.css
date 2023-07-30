@@ -1,0 +1,24 @@
+
+
+.div-center {
+  width: 400px;
+  height: 400px;
+  background-color:  #e2e2e2;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10rem;
+  overflow: auto;
+  padding: 1em 2em;
+  display: table;
+  border-radius: 25px;
+  box-shadow: 2px 2px;
+}
+
+div.content {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.card-scroll{
+  overflow-x: auto;
+}
