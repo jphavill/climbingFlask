@@ -127,9 +127,11 @@ def first_time_setup():
     max_tries = 10
     while not loaded:
         try:
+            print("trying to load")
             max_tries -= 1
             climbs_interface = s3Interface(processed_bucket)
             climb_file, all_climbs, user = climbs_interface.lastModifiedFile(safe_email)
+            print("loaded")
             loaded = True
         except:
             sleep(1)
