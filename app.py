@@ -98,8 +98,10 @@ def first_time_setup():
     stored_creds = creds_interface.readFile(safe_email + '.json')
     climb_file = {}
     if stored_creds and stored_creds['email'] == form_data['email'] and stored_creds['password'] == form_data['password']:
-        pass
+        print("existing user")
     else:
+        print("new user")
+        print(stored_creds)
         creds_interface.writeFile(form_data, f"{safe_email}.json")
         lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
         downloadLambda = lambdaInterface()
