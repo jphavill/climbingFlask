@@ -15,6 +15,6 @@ class lambdaInterface:
             response = json.loads(response['Payload'].read())
             return response['StatusCode']
         except Exception as e:
-            print(f"failed to start lambda: {e}")
+            print(f"failed to start lambda {function_name}: {e}")
             return 401
         
