@@ -60,7 +60,6 @@ def update_account():
         lambda_payload = {"creds": {"email": session["user"], "password": confirmation, "phone": "" if remove_phone else new_phone}}
         phoneLambda = lambdaInterface()
         response = phoneLambda.run_lambda(lambda_payload, "updatePhone", invoc_type="RequestResponse") 
-        response = 403
         if response == 200:
             return redirect(url_for('account'))
         else: 
