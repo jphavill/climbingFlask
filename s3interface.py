@@ -1,4 +1,6 @@
 import boto3
+from botocore.client import Config
+config = Config(connect_timeout=5, retries={'max_attempts': 0})
 import botocore
 import json
 
@@ -17,7 +19,7 @@ class s3Interface:
 
     def readFile(self, key):
         try:
-            client = boto3.client('s3')
+            client = boto3.client('s3', config=config)
             print(f"inside bucket={self.bucket} key={key}")
             response = client.get_object(Bucket=self.bucket, Key=key)
             print("response")
