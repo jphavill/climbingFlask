@@ -6,6 +6,9 @@
         <div class="content">
         <h3 class="title">Manage Account</h3>
         <div class="box">
+            {% if failed_validation %}
+            <p class="text-danger">Incorrect Password. No account changes made</p>
+            {% endif %}
             <form action={{ url_for("update_account") }} method="POST">
                 <p>Current Phone Number: {{phone}}</p>
                 <div class="form-outline  mb-4">

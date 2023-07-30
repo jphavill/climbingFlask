@@ -13,13 +13,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or '871234387412348asdfa
 
 @app.route("/", methods =["GET"])
 def index():
-    print(session.keys())
     if 'climb_file' not in session.keys():
-        print('login')
         return redirect(url_for('login'))
     else:
-        print('climb')
-        print(session['climb_file'])
         return redirect(url_for('climb'))
 
 @app.route('/invalid')
@@ -54,7 +50,6 @@ def account():
 @app.route('/update_account', methods =["POST"])
 def update_account():
     form_data = request.form
-    print(form_data)
     new_phone = form_data["phone"]
     confirmation = form_data["confirmation"]
     remove_phone = 'remove' in form_data.keys()
@@ -62,21 +57,24 @@ def update_account():
 
     if new_phone or remove_phone:
         lambda_payload = {"creds": {"email": session["user"], "password": confirmation, "phone": "" if remove_phone else new_phone}}
-        downloadLambda = lambdaInterface()
-        downloadLambda.run_lambda(lambda_payload, "updatePhone", invoc_type="RequestResponse") 
+        phoneLambda = lambdaInterface()
+        response = phoneLambda.run_lambda(lambda_payload, "updatePhone", invoc_type="RequestResponse") 
+        response = 403
+        if response == 200:
+            return redirect(url_for('account'))
+        else: 
+            return redirect(url_for('account', failed_validation="invalid"))
     
     if remove_account:
         lambda_payload = {"creds": {"email": session["user"], "password": confirmation}}
         lambdaDelete = lambdaInterface()
         response = lambdaDelete.run_lambda(lambda_payload, "delete_account", invoc_type="RequestResponse") 
-        print(response)
         if response == 200:
-            print("did it")
             return redirect(url_for('logout'))
         else: 
-            print("did not do it")
-            return redirect(url_for('account'))
+            return redirect(url_for('account', failed_validation="invalid"))
     return redirect(url_for('account'))
+
 
 @app.route('/climb/', methods =["GET"])
 def climb():
@@ -85,7 +83,6 @@ def climb():
     climb_file = session['climb_file']
     all_climbs = session['all_climbs']
     active_climb = session['active_climb']
-    print(all_climbs)
     labels, success_data, attempts_data = generateClimbGraph(climb_file)
     timeline_datasets = generateTimelineGraph(climb_file)
     climb_data = {"success_data": success_data, "attempts_data": attempts_data}
@@ -95,39 +92,30 @@ def climb():
 @app.route('/first_time_setup', methods =["POST"])
 def first_time_setup():
     form_data = request.json
-    print(form_data)
     safe_email = form_data['email'].replace('@', '.')
     session["user"] = safe_email
     creds_interface = s3Interface(user_creds_bucket)
     stored_creds = creds_interface.readFile(safe_email + '.json')
     climb_file = {}
-    print(f"stored_creds {stored_creds}")
-    print(f"form data {form_data}")
     if stored_creds and stored_creds['email'] == form_data['email'] and stored_creds['password'] == form_data['password']:
-        print("creds already exist, loggin in")
+        pass
     else:
-        print("new user, storing data in s3")
         creds_interface.writeFile(form_data, f"{safe_email}.json")
         lambda_payload = {"Key": f"{safe_email}.json", "Days": 7}
         downloadLambda = lambdaInterface()
         response = downloadLambda.run_lambda(lambda_payload, "testDownload", invoc_type="RequestResponse") 
         
         for _ in range(10):
-            print("response")
-            print(response)
-
             if int(response) == 200:
                 break
             elif int(response) == 403:
-                print("dealing with ddos stuff")
+                # dealing with ddos prevention
                 sleep(2)
             elif int(response) == 401:
-                print("401")
                 break
             response = downloadLambda.run_lambda(lambda_payload, "testDownload", invoc_type="RequestResponse") 
         # give time for at least one climb to be processed before calling for it
         if response != 200:
-            print("wrong creds")
             lambda_payload = {"creds": {"email": safe_email, "password":  form_data['password']}}
             lambdaDelete = lambdaInterface()
             response = lambdaDelete.run_lambda(lambda_payload, "delete_account", invoc_type="RequestResponse")
