@@ -38,7 +38,7 @@ class s3Interface:
         # last_modified = lambda obj: int(obj['LastModified'].strftime('%d%m%Y%H%M%S'))
         most_recent = lambda obj: obj['Key']
         try:
-            client = boto3.client('s3', region_name="eu-east-1")
+            client = boto3.client('s3', region_name="us-east-1")
             objects_list = client.list_objects_v2(Bucket=self.bucket, Prefix=prefix)['Contents']
             recent_files = sorted(objects_list, key=most_recent, reverse=True)
             recent_key = recent_files[0]['Key']
