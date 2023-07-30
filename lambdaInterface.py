@@ -6,7 +6,7 @@ class lambdaInterface:
     def run_lambda(self, payload, function_name, invoc_type="Event"):
         payload = json.dumps(payload).encode('utf-8')
         try: 
-            client = boto3.client('lambda')
+            client = boto3.client('lambda', region_name = 'us-east-1')
             response = client.invoke(
                 FunctionName=function_name,
                 InvocationType=invoc_type,
